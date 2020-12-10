@@ -22,21 +22,22 @@ print(one_jolt_difference * three_jolt_difference)
 allowed_steps = [1, 2, 3]
 last_item = input_list[-1]
 
-history = {}
+arrangement_history = {}
 
 
 def find_arrangements(current_value: int, list: []):
-    if "{}".format(current_value) in history:
-        return history["{}".format(current_value)]
+    if str(current_value) in arrangement_history:
+        return arrangement_history[str(current_value)]
 
     if current_value == last_item:
         return 1
 
+    split_index = 1
     value = 0
-    for step in allowed_steps:
-        if current_value+step in list:
-            value += find_arrangements(current_value+step, list[1:])
-            history["{}".format(current_value)] = value
+    for step in (x for x in allowed_steps if current_value+x in list):
+        value += find_arrangements(current_value+step, list[split_index:])
+        split_index += 1
+        arrangement_history[str(current_value)] = value
 
     return value
 
