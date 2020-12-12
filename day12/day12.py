@@ -2,6 +2,7 @@ with open('input', 'r') as input_file:
     input_list = [(instruction[0], int(instruction[1:]))
                   for instruction in input_file.read().splitlines()]
 
+"""challenge 1"""
 directions = ['N', 'E', 'S', 'W']
 
 north_south = 0
@@ -32,6 +33,7 @@ print(east_west, north_south)
 print(abs(north_south) + abs(east_west))
 
 
+"""challenge 2"""
 north_south = 0
 east_west = 0
 waypoint_north_south = 1
