@@ -1,6 +1,4 @@
 import numpy as np
-import time
-start_time = time.time()
 
 character_mapping = {
     '.': -1,
@@ -65,4 +63,3 @@ for row in input_list:
         if seat == 1:
             total += 1
 print(total)
-print("--- %s seconds ---" % (time.time() - start_time))
