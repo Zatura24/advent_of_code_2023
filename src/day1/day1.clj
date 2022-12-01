@@ -1,26 +1,20 @@
 (ns day1.day1
   (:require
-    [clojure.string :as str]))
+    [clojure.string :as str]
+    [clojure.edn :as edn]))
 
-(defn readInput [] (map #(Integer/parseInt %) (str/split-lines (slurp "src/day1/input.edn"))))
+(defn readInput [] (map #(map edn/read-string (str/split-lines %)) (str/split (slurp "src/day1/input.edn") #"\n\n")))
 
 (defn part-1 []
   (->>
     (readInput)
-    (partition 2 1)
-    (filter #(apply < %))
-    (count)))
+    (map #(reduce + %))
+    (apply max)))
 
 (defn part-2 []
   (->>
     (readInput)
-    (partition 3 1)
     (map #(reduce + %))
-    (map #(reduce + %))
-    (partition 2 1)
-    (filter #(apply < %))
-    (count)))
-
-(comment
-  (part-1)
-  (part-2))
+    sort
+    (take-last 3)
+    (apply +)))
