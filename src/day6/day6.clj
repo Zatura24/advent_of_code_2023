@@ -1,27 +1,14 @@
-(ns day6.day6
-  (:require
-    [clojure.string :as str]
-    [clojure.edn :as edn]
-    [clojure.data]))
+(ns day6.day6)
 
-(defn read-input [] (str/replace (slurp "src/day6/input.edn") #"\n" ""))
+(defn read-input [] (slurp "src/day6/input.edn"))
 
-(defn find-starting-point [n partitions]
-  (loop [[p & rest] (map #(into #{} %) partitions)
-         index 0]
-    (when p
-      (if (= n (count p))
-        (+ index n)
-        (recur rest (inc index))))))
+(defn find-starting-point [size input]
+  (loop [[p & rest] (map set (partition-all size 1 input))
+         index size]
+    (if (= size (count p))
+        index
+        (recur rest (inc index)))))
 
-(defn part-1 []
-  (->> 
-    (read-input)
-    (partition-all 4 1)
-    (find-starting-point 4)))
+(defn part-1 [] (find-starting-point 4 (read-input)))
 
-(defn part-2 []
-  (->>
-    (read-input)
-    (partition-all 14 1)
-    (find-starting-point 14)))
+(defn part-2 [] (find-starting-point 14 (read-input)))
