@@ -6,8 +6,8 @@
   (loop [[p & rest] (map set (partition-all size 1 input))
          index size]
     (if (= size (count p))
-        index
-        (recur rest (inc index)))))
+      index
+      (recur rest (inc index)))))
 
 (defn part-1 [] (find-starting-point 4 (read-input)))
 

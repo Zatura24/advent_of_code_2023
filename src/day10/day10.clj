@@ -1,14 +1,14 @@
 (ns day10.day10
   (:require
-    [clojure.string :as str]
-    [clojure.edn :as edn]
-    [clojure.data]))
+   [clojure.string :as str]
+   [clojure.edn :as edn]
+   [clojure.data]))
 
-(defn read-input [] 
+(defn read-input []
   (->>
-    (slurp "src/day10/input.edn")
-    (str/split-lines)
-    (map #(re-seq #"-\d+|\w+" %))))
+   (slurp "src/day10/input.edn")
+   (str/split-lines)
+   (map #(re-seq #"-\d+|\w+" %))))
 
 ;; =======
 ;;  part1
@@ -21,12 +21,12 @@
 
 (defn perform-instruction [ctx [op param]]
   (case op
-    "noop" (-> ctx 
-               (update :cycle inc) 
+    "noop" (-> ctx
+               (update :cycle inc)
                (check-interesting-signal))
-    "addx" (-> ctx 
-               (update :cycle inc) 
-               (check-interesting-signal) 
+    "addx" (-> ctx
+               (update :cycle inc)
+               (check-interesting-signal)
                (update :cycle inc)
                (check-interesting-signal)
                (update :x + (Integer/parseInt param)))))
@@ -42,10 +42,10 @@
 
 (defn should-draw? [cursor x]
   (contains?
-    (->> [x x x]
-         (map + [-1 0 1])
-         (into #{}))
-    cursor))
+   (->> [x x x]
+        (map + [-1 0 1])
+        (into #{}))
+   cursor))
 
 (defn draw-pixel [{:keys [cycle x] :as ctx}]
   (let [cursor (mod cycle 40)
@@ -58,10 +58,10 @@
     "noop" (-> ctx
                (draw-pixel)
                (update :cycle inc))
-    "addx" (-> ctx 
+    "addx" (-> ctx
                (draw-pixel)
                (update :cycle inc)
-               (draw-pixel) 
+               (draw-pixel)
                (update :cycle inc)
                (update :x + (Integer/parseInt param)))))
 

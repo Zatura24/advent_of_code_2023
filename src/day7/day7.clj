@@ -1,6 +1,6 @@
 (ns day7.day7
   (:require
-    [clojure.string :as str]))
+   [clojure.string :as str]))
 
 (defn navigation-down? [line]
   (some? (re-matches #"\$ cd \w+" line)))
@@ -22,18 +22,18 @@
       (file-size line) (recur remaining (mapv #(+ % (file-size line)) directories) done)
       :else (recur remaining directories done))))
 
-(defn read-input [] 
+(defn read-input []
   (->>
-    (slurp "src/day7/input.edn")
-    str/split-lines
-    rest
-    ->directory-sizes))
+   (slurp "src/day7/input.edn")
+   str/split-lines
+   rest
+   ->directory-sizes))
 
 (defn part-1 []
-  (->> 
-    (read-input)
-    (filterv #(<= % 100000))
-    (apply +)))
+  (->>
+   (read-input)
+   (filterv #(<= % 100000))
+   (apply +)))
 
 (defn part-2 []
   (let [input (read-input)

@@ -1,8 +1,8 @@
 (ns day9.day9
   (:require
-    [clojure.string :as str]))
+   [clojure.string :as str]))
 
-(defn read-input [] 
+(defn read-input []
   (->> (slurp "src/day9/input.edn")
        (str/split-lines)
        (map #(re-seq #"\d+|\w" %))
@@ -17,7 +17,7 @@
        (reduce max)))
 
 (defn follow [tail head]
-  (if (> (distance head tail) 1) 
+  (if (> (distance head tail) 1)
     (->> (map - head tail)
          (map signum)
          (mapv + tail))
@@ -27,26 +27,26 @@
   (case direction
     "U" (update knot 1 inc)
     "D" (update knot 1 dec)
-    "L" (update knot 0 dec) 
+    "L" (update knot 0 dec)
     "R" (update knot 0 inc)))
 
 (defn move-rope [{:keys [rope] :as state} direction]
   (let [moved-rope (reduce
-                     (fn [moved-rope rope]
-                       (conj moved-rope (follow rope (peek moved-rope))))
-                     [(move-in-direction (first rope) direction)]
-                     (rest rope))]
+                    (fn [moved-rope rope]
+                      (conj moved-rope (follow rope (peek moved-rope))))
+                    [(move-in-direction (first rope) direction)]
+                    (rest rope))]
     (-> state
         (assoc :rope moved-rope)
         (update :visited conj (peek moved-rope)))))
 
 (defn perform-instructions [instructions rope-length]
   (reduce
-    (fn [state [dir times]]
-      (nth (iterate #(move-rope % dir) state) times))
-    {:visited #{[0 0]}
-     :rope (repeat rope-length [0 0])}
-    instructions)) 
+   (fn [state [dir times]]
+     (nth (iterate #(move-rope % dir) state) times))
+   {:visited #{[0 0]}
+    :rope (repeat rope-length [0 0])}
+   instructions))
 
 (defn part-1 []
   (-> (read-input)

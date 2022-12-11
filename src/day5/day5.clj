@@ -1,8 +1,8 @@
 (ns day5.day5
   (:require
-    [clojure.string :as str]
-    [clojure.edn :as edn]
-    [clojure.data]))
+   [clojure.string :as str]
+   [clojure.edn :as edn]
+   [clojure.data]))
 
 (defn transpose [matrix]
   (apply mapv vector matrix))
@@ -27,19 +27,19 @@
   {:stacks (read-stacks stack-drawing)
    :steps (read-steps steps)})
 
-(defn read-input [] 
+(defn read-input []
   (->
-    (slurp "src/day5/input.edn")
-    (str/split #"\n\n")
-    parse-input))
+   (slurp "src/day5/input.edn")
+   (str/split #"\n\n")
+   parse-input))
 
 (defn perform-step [{:keys [stacks cratemover-9001?] :as ctx} [amount from to]]
   (let [from (dec from)
-        to (dec to) 
+        to (dec to)
         [to-move remains] (split-at amount (stacks from))]
     (-> ctx
         (assoc-in [:stacks from] remains)
-        (assoc-in [:stacks to] 
+        (assoc-in [:stacks to]
                   (if cratemover-9001?
                     (concat to-move (stacks to))
                     (apply conj (stacks to) to-move))))))
