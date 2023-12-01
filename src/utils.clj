@@ -26,8 +26,7 @@
   [^CharSequence s]
   (str/split s #"\r?\n\r?\n"))
 
-(defn sum [coll] (apply + coll))
-
-(defn int [coll] (map #(Integer/parseInt %) coll))
+(defn parse-ints [coll] (map #(Integer/parseInt %) coll))
   
+(defn parse-int [s] (Integer/parseInt s))
 
