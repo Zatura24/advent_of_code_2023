@@ -6,20 +6,16 @@
 
 (def cubes {"red" 12 "green" 13 "blue" 14})
 
-(defn valid-cube? [cube]
-    (let [[n c] (str/split cube #" ")]
-      (>= (get cubes c) (utils/parse-int n))))
-
-(defn valid-set? [set]
-    (every? valid-cube? (str/split set #", ")))
+(defn valid-cube? [[_ n c]]
+  (>= (get cubes c) (utils/parse-int n)))
 
 (defn part-1 []
   (->> (utils/read-input)
-       str/split-lines
-       (map #(-> % (str/split #": ") second)) 
+       str/split-lines 
+       (map (partial re-seq #"(\d+) (red|green|blue)"))
        (keep-indexed
          (fn [idx sets]
-           (when (every? valid-set? (str/split sets #"; "))
+           (when (every? valid-cube? sets)
              (inc idx))))
        (apply +)))
 
@@ -35,7 +31,6 @@
 (defn part-2 []
   (->> (utils/read-input)
        str/split-lines
-       (map #(-> % (str/split #": ") second))
        (map (comp (partial apply *) 
                   vals 
                   parse-draws 
