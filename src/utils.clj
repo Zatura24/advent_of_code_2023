@@ -30,5 +30,11 @@
   
 (defn parse-int [s] (Integer/parseInt s))
 
-(defn split-with [pred coll]
+(defn split-with' [pred coll]
   [(take-while pred coll) (next (drop-while pred coll))])
+
+
+(defn range'
+  "Returns a lazy seq with a length from start" 
+  [start length]
+  (take length (drop start (range))))

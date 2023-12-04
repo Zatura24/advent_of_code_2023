@@ -9,35 +9,37 @@
     (utils/read-input)
     str/split-lines
     (map (comp next (partial re-seq #"\d+|\|")))
-    (map (partial utils/split-with #(not= % "|")))
+    (map (partial utils/split-with' #(not= % "|")))
     (map (partial map set))))
 
 (defn part-1 []
   (reduce
     (fn [acc [winning have]]
-      (let [overlap (clojure.set/intersection winning have)]
-        (if (zero? (count overlap))
+      (let [overlap (count (clojure.set/intersection winning have))]
+        (if (zero? overlap)
           acc
-          (+ acc (int (clojure.math/pow 2 (dec (count overlap))))))))
+          (+ acc (int (clojure.math/pow 2 (dec overlap)))))))
     0
     (parse-cards)))
 
 (defn part-2 []
-  (let [cards (parse-cards)
-        results (loop [[card & res] cards
-                       card-num 1
-                       acc {}]
-                  (if card
-                    (let [overlap (clojure.set/intersection (first card) (second card))]
-                      (recur res (inc card-num) (assoc acc card-num (take (count overlap) (drop (inc card-num) (range))))))
-                    acc))]
-    (loop [[x & xs] (range 1 (inc (count cards)))
-           acc 0]
-      (if x
-        (recur (into xs (get results x)) (inc acc))
-        acc))))
+  (loop [cards (parse-cards)
+         card-counts (into [] (take (count cards) (repeat 1)))
+         card-num 0]
+    (if-let [[winning have] (peek cards)] 
+      (let [overlap (clojure.set/intersection winning have)]
+        (recur 
+          (pop cards) 
+          (reduce 
+            (fn [card-counts next-card-num]
+              (update card-counts next-card-num + (get card-counts card-num))) 
+            card-counts 
+            (utils/range' (inc card-num) (count overlap)))
+          (inc card-num)))
+      (apply + card-counts))))
 
 (comment
-  (part-1)
+  (time (part-1))
 
-  (part-2))
+  (time (part-2)))
+
