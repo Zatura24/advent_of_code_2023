@@ -26,14 +26,14 @@
   (loop [cards (parse-cards)
          card-counts (into [] (take (count cards) (repeat 1)))
          card-num 0]
-    (if-let [[winning have] (peek cards)] 
+    (if-let [[winning have] (peek cards)]
       (let [overlap (clojure.set/intersection winning have)]
-        (recur 
-          (pop cards) 
-          (reduce 
+        (recur
+          (pop cards)
+          (reduce
             (fn [card-counts next-card-num]
-              (update card-counts next-card-num + (get card-counts card-num))) 
-            card-counts 
+              (update card-counts next-card-num + (get card-counts card-num)))
+            card-counts
             (utils/range' (inc card-num) (count overlap)))
           (inc card-num)))
       (apply + card-counts))))

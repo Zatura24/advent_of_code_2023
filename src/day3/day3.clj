@@ -5,18 +5,18 @@
 (defn parse-to-symbol-coords [input]
   (->> input
        str/split-lines
-       (map-indexed 
+       (map-indexed
          (fn [y line]
            (map-indexed
              (fn [x c]
-               [[y x] c]) 
-             line))) 
+               [[y x] c])
+             line)))
        (apply concat)
        (remove #(str/index-of ".1234567890" (second %)))
        set))
 
 (defn parse-to-num-info [input]
-  (->> input 
+  (->> input
        str/split-lines
        (map-indexed
          (fn [row line]
@@ -41,7 +41,7 @@
               symbol-coords)
           (+ acc (utils/parse-int num))
           acc))
-      0 
+      0
       num-info))
 
   (let [input (utils/read-input)
@@ -60,5 +60,5 @@
             (if (= 2 (count nums))
               (+ acc (apply * nums))
               acc))))
-      0 
+      0
       symbol-coords)))

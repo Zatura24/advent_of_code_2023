@@ -11,7 +11,7 @@
 
 (defn part-1 []
   (->> (utils/read-input)
-       str/split-lines 
+       str/split-lines
        (map (partial re-seq #"(\d+) (red|green|blue)"))
        (keep-indexed
          (fn [idx sets]
@@ -31,13 +31,13 @@
 (defn part-2 []
   (->> (utils/read-input)
        str/split-lines
-       (map (comp (partial apply *) 
-                  vals 
-                  parse-draws 
+       (map (comp (partial apply *)
+                  vals
+                  parse-draws
                   (partial re-seq #"(\d+) (red|green|blue)")))
        (apply +)))
 
 (comment
   (part-1)
-  
+
   (part-2))
