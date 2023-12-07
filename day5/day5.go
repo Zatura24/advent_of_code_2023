@@ -6,8 +6,14 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 )
+
+type SeedRange struct {
+    seedStart int
+    seedEnd   int
+}
+
+type SeedRangeQueue []SeedRange
 
 type MapRange struct {
     destination int
@@ -27,17 +33,17 @@ func (rs CategoryMap) getSeedDestination(seed int) int {
     return seed
 }
 
-func (rs CategoryMap) getRangeDestination(seedRangeStack SeedRangeStack) SeedRangeStack {
-    mappedSeedRangeStack := make(SeedRangeStack, 0)
+func (rs CategoryMap) getRangeDestination(seedRangeQueue SeedRangeQueue) SeedRangeQueue {
+    mappedSeedRanges := make(SeedRangeQueue, 0)
 
     for _, r := range rs { 
-        n := len(seedRangeStack)
+        n := len(seedRangeQueue)
 
         for n > 0 {
-            // pop top element
+            // pop first element
             n -= 1
-            sr := seedRangeStack[0]
-            seedRangeStack = seedRangeStack[1:]
+            sr := seedRangeQueue[0]
+            seedRangeQueue = seedRangeQueue[1:]
 
             // before needs to be checked with the next MapRange
             before := SeedRange{
@@ -45,7 +51,7 @@ func (rs CategoryMap) getRangeDestination(seedRangeStack SeedRangeStack) SeedRan
                 seedEnd: min(sr.seedEnd, r.rangeStart),
             }
             if before.seedEnd > before.seedStart {
-                seedRangeStack = append(seedRangeStack, before)
+                seedRangeQueue = append(seedRangeQueue, before)
             }
 
             // same as in part 1, but for whole range
@@ -56,7 +62,7 @@ func (rs CategoryMap) getRangeDestination(seedRangeStack SeedRangeStack) SeedRan
             if inner.seedEnd > inner.seedStart {
                 inner.seedStart = r.destination + inner.seedStart - r.rangeStart
                 inner.seedEnd = r.destination + inner.seedEnd - r.rangeStart
-                mappedSeedRangeStack = append(mappedSeedRangeStack, inner)
+                mappedSeedRanges = append(mappedSeedRanges, inner)
             }
 
             // after needs to be checked with the next MapRange
@@ -65,13 +71,13 @@ func (rs CategoryMap) getRangeDestination(seedRangeStack SeedRangeStack) SeedRan
                 seedEnd: sr.seedEnd,
             }
             if after.seedEnd > after.seedStart {
-                seedRangeStack = append(seedRangeStack, after)
+                seedRangeQueue = append(seedRangeQueue, after)
             }
         }
     }
 
     // return the combination of all mapped ranges with all non mapped ranges
-    return append(mappedSeedRangeStack, seedRangeStack...)
+    return append(mappedSeedRanges, seedRangeQueue...)
 }
 
 func categoryMaps(lines []string) []CategoryMap {
@@ -106,14 +112,19 @@ func categoryMaps(lines []string) []CategoryMap {
     return categoryMaps
 }
 
-func part1(lines []string) {
+func seeds(lines []string) []int {
     seeds := make([]int, 0)
     for _, seed := range strings.Fields(strings.Split(lines[0], ":")[1]) {
         n, _ := strconv.Atoi(seed)
         seeds = append(seeds, n)
     }
+    return seeds
+}
 
+func part1(lines []string) {
+    seeds := seeds(lines) 
     categoryMaps := categoryMaps(lines)
+
     closestLocation := math.MaxInt
     for _, seed := range seeds {
         for _, ranges := range categoryMaps {
@@ -126,24 +137,13 @@ func part1(lines []string) {
     fmt.Println(closestLocation)
 }
 
-type SeedRange struct {
-    seedStart int
-    seedEnd   int
-}
-
-type SeedRangeStack []SeedRange
-
 func part2(lines []string){
-    seeds := make([]int, 0)
-    for _, seed := range strings.Fields(strings.Split(lines[0], ":")[1]) {
-        n, _ := strconv.Atoi(seed)
-        seeds = append(seeds, n)
-    }
-
+    seeds := seeds(lines) 
     categoryMaps := categoryMaps(lines)
+
     closestLocation := math.MaxInt
     for i := 0; i < len(seeds); i += 2 {
-        stack := SeedRangeStack{
+        queue := SeedRangeQueue{
             SeedRange{
                 seedStart: seeds[i],
                 seedEnd: seeds[i] + seeds[i+1],
@@ -151,10 +151,10 @@ func part2(lines []string){
         }
 
         for _, ranges := range categoryMaps {
-            stack = ranges.getRangeDestination(stack)
+            queue = ranges.getRangeDestination(queue)
         }
 
-        for _, rs := range stack {
+        for _, rs := range queue {
             closestLocation = min(closestLocation, rs.seedStart)
         }
     }
@@ -171,10 +171,6 @@ func main () {
 
     lines := strings.Split(strings.TrimSpace(string(input)), "\n")
 
-    start := time.Now()
     part1(lines)
-    fmt.Println(time.Since(start))
-    start = time.Now()
     part2(lines)
-    fmt.Println(time.Since(start))
 }
