@@ -1,4 +1,4 @@
-(ns day4.day4
+(ns year2023.day4.day4
   (:require [utils]
             [clojure.math]
             [clojure.set]
@@ -26,10 +26,10 @@
   (loop [cards (parse-cards)
          card-counts (into [] (take (count cards) (repeat 1)))
          card-num 0]
-    (if-let [[winning have] (peek cards)]
+    (if-let [[winning have] (first cards)]
       (let [overlap (clojure.set/intersection winning have)]
         (recur
-          (pop cards)
+          (rest cards)
           (reduce
             (fn [card-counts next-card-num]
               (update card-counts next-card-num + (get card-counts card-num)))
@@ -39,7 +39,7 @@
       (apply + card-counts))))
 
 (comment
-  (time (part-1))
+  (part-1)
 
-  (time (part-2)))
+  (part-2))
 

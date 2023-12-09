@@ -40,3 +40,4 @@
 
 (defn fields [^CharSequence s]
   (str/split s #"[\t|\n|\v|\f|\r| ]+"))
+
