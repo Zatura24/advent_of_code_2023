@@ -1,4 +1,4 @@
-(ns user
+(ns year2021.user
   (:require
     [clojure.tools.namespace.repl :refer [refresh]]
     [day1.day1]
@@ -10,4 +10,4 @@
     [day7.day7]
     [day10.day10]))
 
-(defn user-test [] "Hello, World!)
+(defn user-test [] "Hello, World!")

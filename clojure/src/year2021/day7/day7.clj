@@ -1,4 +1,4 @@
-(ns day7.day7
+(ns year2021.day7.day7
   (:require
     [clojure.string :as str]))
 
@@ -25,4 +25,5 @@
 
 (comment
   (part-1 input)
+
   (part-2 input))

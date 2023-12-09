@@ -1,4 +1,4 @@
-(ns day2.day2
+(ns year2021.day2.day2
   (:require
     [clojure.string :as str]))
 
