@@ -1,12 +1,15 @@
 package main
 
 import (
+    _ "embed"
 	"fmt"
 	"math"
-	"os"
 	"strconv"
 	"strings"
 )
+
+//go:embed input.txt
+var input string
 
 type SeedRange struct {
     seedStart int
@@ -36,7 +39,7 @@ func (rs CategoryMap) getSeedDestination(seed int) int {
 func (rs CategoryMap) getRangeDestination(seedRangeQueue SeedRangeQueue) SeedRangeQueue {
     mappedSeedRanges := make(SeedRangeQueue, 0)
 
-    for _, r := range rs { 
+    for _, r := range rs {
         n := len(seedRangeQueue)
 
         for n > 0 {
@@ -122,7 +125,7 @@ func seeds(lines []string) []int {
 }
 
 func part1(lines []string) {
-    seeds := seeds(lines) 
+    seeds := seeds(lines)
     categoryMaps := categoryMaps(lines)
 
     closestLocation := math.MaxInt
@@ -138,7 +141,7 @@ func part1(lines []string) {
 }
 
 func part2(lines []string){
-    seeds := seeds(lines) 
+    seeds := seeds(lines)
     categoryMaps := categoryMaps(lines)
 
     closestLocation := math.MaxInt
@@ -163,13 +166,7 @@ func part2(lines []string){
 }
 
 func main () {
-    input, err := os.ReadFile("input.txt")
-    if err != nil {
-        fmt.Println(err)
-        os.Exit(1)
-    }
-
-    lines := strings.Split(strings.TrimSpace(string(input)), "\n")
+    lines := strings.Split(strings.TrimSpace(input), "\n")
 
     part1(lines)
     part2(lines)
