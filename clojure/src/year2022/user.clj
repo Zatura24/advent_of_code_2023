@@ -1,4 +1,4 @@
-(ns user
+(ns year2022.user
   (:require
    [clojure.tools.namespace.repl :refer [refresh]]))
 
