@@ -13,10 +13,10 @@
           (interpose File/separator)
           (apply str)))))
 
-(defn read-input 
+(defn read-input
   ([] (read-input "input.txt"))
   ([file]
-   (-> 
+   (->
      (parent-ns)
      (str File/separator file)
      io/resource
@@ -27,14 +27,16 @@
   (str/split s #"\r?\n\r?\n"))
 
 (defn parse-ints [coll] (map #(Integer/parseInt %) coll))
-  
+
 (defn parse-int [s] (Integer/parseInt s))
 
 (defn split-with' [pred coll]
   [(take-while pred coll) (next (drop-while pred coll))])
 
-
 (defn range'
-  "Returns a lazy seq with a length from start" 
+  "Returns a lazy seq with a length from start"
   [start length]
   (take length (drop start (range))))
+
+(defn fields [^CharSequence s]
+  (str/split s #"[\t|\n|\v|\f|\r| ]+"))
