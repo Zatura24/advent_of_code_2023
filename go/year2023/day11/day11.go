@@ -38,8 +38,7 @@ func calculateDistances(lines []string, expansion int) {
     for i := 0; i < len(galaxies); i++ {
         for j := i + 1; j < len(galaxies); j++ {
             // sum distances between 2 galaxies
-            p1 := galaxies[i]
-            p2 := galaxies[j]
+            p1, p2 := galaxies[i], galaxies[j]
             rowLength := utils.Sum(rows[min(p1.row, p2.row):max(p1.row, p2.row)])
             colLength := utils.Sum(cols[min(p1.col, p2.col):max(p1.col, p2.col)])
             sum += rowLength + colLength
