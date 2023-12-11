@@ -16,17 +16,6 @@ type Point struct {
     col int
 }
 
-func findGalaxies(input []string) (galaxies []Point) {
-    for r, line := range input {
-        for c, char := range line {
-            if char == '#' {
-                galaxies = append(galaxies, Point{row: r, col: c})
-            }
-        }
-    }
-    return
-}
-
 func calculateDistances(lines []string, expansion int) {
     // create slices of distances, 1 2 1 1 1 2 ...
     rows := make([]int, len(lines))
@@ -34,10 +23,15 @@ func calculateDistances(lines []string, expansion int) {
     utils.Fill(rows, expansion)
     utils.Fill(cols, expansion)
 
-    galaxies := findGalaxies(lines)
-    for _, p := range galaxies {
-        rows[p.row] = 1
-        cols[p.col] = 1
+    galaxies := make([]Point, 0)
+    for r, line := range lines {
+        for c, char := range line {
+            if char == '#' {
+                galaxies = append(galaxies, Point{row: r, col: c})
+                rows[r] = 1
+                cols[c] = 1
+            }
+        }
     }
 
     sum := 0
