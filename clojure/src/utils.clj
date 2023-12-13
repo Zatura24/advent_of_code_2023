@@ -41,3 +41,5 @@
 (defn fields [^CharSequence s]
   (str/split s #"[\t|\n|\v|\f|\r| ]+"))
 
+(defn transpose [matrix]
+  (apply mapv vector matrix))
