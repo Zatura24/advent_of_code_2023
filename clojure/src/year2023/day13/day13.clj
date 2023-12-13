@@ -13,7 +13,7 @@
     (drop-while (partial not= d))
     count))
 
-(defn part-1 []
+(defn summarize-notes [d]
   (->> (utils/read-input)
        utils/split-double-lines
        (reduce
@@ -21,21 +21,13 @@
            (let [m (str/split-lines m)]
              ;; vertical | horizontal
              (+ acc
-                (-> m utils/transpose (find-split-for-difference 0))
-                (-> m (find-split-for-difference 0) (* 100)))))
+                (-> m utils/transpose (find-split-for-difference d))
+                (-> m (find-split-for-difference d) (* 100)))))
          0)))
 
-(defn part-2 []
-  (->> (utils/read-input)
-       utils/split-double-lines
-       (reduce
-         (fn [acc m]
-           (let [m (str/split-lines m)]
-             ;; vertical | horizontal
-             (+ acc
-                (-> m utils/transpose (find-split-for-difference 1))
-                (-> m (find-split-for-difference 1) (* 100)))))
-         0)))
+(def part-1 #(summarize-notes 0))
+
+(def part-2 #(summarize-notes 1))
 
 (comment
   (part-1)
