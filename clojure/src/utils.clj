@@ -30,7 +30,7 @@
 
 (defn parse-int [s] (Integer/parseInt s))
 
-(defn split-with' [pred coll]
+(defn split-without [pred coll]
   [(take-while pred coll) (next (drop-while pred coll))])
 
 (defn range'

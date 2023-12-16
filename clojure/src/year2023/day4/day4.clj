@@ -9,7 +9,7 @@
     (utils/read-input)
     str/split-lines
     (map (comp next (partial re-seq #"\d+|\|")))
-    (map (partial utils/split-with' #(not= % "|")))
+    (map (partial utils/split-without #(not= % "|")))
     (map (partial map set))))
 
 (defn part-1 []
