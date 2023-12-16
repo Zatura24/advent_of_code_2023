@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 	"strings"
-	"time"
+	"sync"
 
 	"github.com/Zatura24/advent_of_code_2023/go/utils"
 )
@@ -19,44 +19,17 @@ type Beam struct {
     dc int
 }
 
-func printGrid(gridO []string, seen utils.Set[Beam]) {
-    time.Sleep(10 * time.Millisecond)
-    grid := make([]string, len(gridO))
-    copy(grid, gridO)
-
-    for _, p := range seen.Members() {
-        out := []rune(grid[p.r])
-        out[p.c] = '#'
-        grid[p.r] = string(out)
-    }
-    fmt.Println("\033[2J\033[H")
-    fmt.Println(strings.Join(grid, "\n"))
-
-
-    energized := utils.NewSet[Beam]()
-    for _ , b := range seen.Members() {
-        energized.Add(Beam{r: b.r, c: b.c})
-    }
-    fmt.Println(len(energized))
-}
-
-func main() {
-    grid := strings.Split(strings.TrimSpace(input), "\n")
+func countEnergizedTiles(grid []string, startBeam Beam, c chan int, wg *sync.WaitGroup) {
+    defer wg.Done()
 
     queue := make([]Beam, 0)
-    queue = append(queue, Beam{r: 0, c: -1, dr: 0, dc: 1})
+    queue = append(queue, startBeam)
 
     seen := utils.NewSet[Beam]()
     for len(queue) != 0 {
-//        printGrid(grid, seen)
-
         // pop queue
         cursor := queue[0]
         queue = queue[1:]
-
-        // pop stack
-//        cursor := queue[len(queue)-1]
-//        queue = queue[:len(queue)-1]
 
         // move beam
         r, c := cursor.r + cursor.dr, cursor.c + cursor.dc
@@ -140,5 +113,36 @@ func main() {
     for _ , b := range seen.Members() {
         energized.Add(Beam{r: b.r, c: b.c})
     }
-    fmt.Println(len(energized))
+
+    c <- len(energized)
+}
+
+func main() {
+    grid := strings.Split(strings.TrimSpace(input), "\n")
+
+    amountOfDirections := len(grid)*2 + len(grid[0])*2
+    var wg sync.WaitGroup
+    c := make(chan int, amountOfDirections)
+
+    wg.Add(amountOfDirections)
+    for i := 0; i < len(grid); i++ {
+        go countEnergizedTiles(grid, Beam{r: i, c: -1, dr: 0, dc: 1}, c, &wg)
+        go countEnergizedTiles(grid, Beam{r: i, c: len(grid[0]), dr: 0, dc: -1}, c, &wg)
+    }
+    for i := 0; i < len(grid[0]); i++ {
+        go countEnergizedTiles(grid, Beam{r: -1, c: i, dr: 1, dc: 0}, c, &wg)
+        go countEnergizedTiles(grid, Beam{r: len(grid), c: i, dr: -1, dc: 0}, c, &wg)
+    }
+
+    go func() {
+        defer close(c)
+        wg.Wait()
+    }()
+
+    maxEnergized := 0
+    for n := range c {
+        maxEnergized = max(maxEnergized, n)
+    }
+
+    fmt.Println(maxEnergized)
 }
