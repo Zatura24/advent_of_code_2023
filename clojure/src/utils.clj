@@ -26,9 +26,9 @@
   [^CharSequence s]
   (str/split s #"\r?\n\r?\n"))
 
-(defn parse-ints [coll] (map #(Integer/parseInt %) coll))
+(defn parse-int [s] (Integer/parseInt (str s)))
 
-(defn parse-int [s] (Integer/parseInt s))
+(defn parse-ints [coll] (mapv parse-int coll))
 
 (defn split-without [pred coll]
   [(take-while pred coll) (next (drop-while pred coll))])
