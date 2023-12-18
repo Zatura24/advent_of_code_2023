@@ -41,21 +41,15 @@ func part1(lines []string) {
         boundary += n
 
         lp := points[len(points)-1]
-        if d == "U" {
+        switch d {
+        case "U":
             points = append(points, Point{lp.r - n, lp.c})
-            continue
-        }
-        if d == "R" {
+        case "R":
             points = append(points, Point{lp.r, lp.c + n})
-            continue
-        }
-        if d == "D" {
+        case "D":
             points = append(points, Point{lp.r + n, lp.c})
-            continue
-        }
-        if d == "L" {
+        case "L":
             points = append(points, Point{lp.r, lp.c - n})
-            continue
         }
     }
     fmt.Println(innerPoints(points, boundary))
@@ -73,21 +67,15 @@ func part2(lines []string) {
         boundary += n
 
         lp := points[len(points)-1]
-        if d == "3" {
+        switch d {
+        case "3":
             points = append(points, Point{lp.r - n, lp.c})
-            continue
-        }
-        if d == "0" {
+        case "0":
             points = append(points, Point{lp.r, lp.c + n})
-            continue
-        }
-        if d == "1" {
+        case "1":
             points = append(points, Point{lp.r + n, lp.c})
-            continue
-        }
-        if d == "2" {
+        case "2":
             points = append(points, Point{lp.r, lp.c - n})
-            continue
         }
     }
 
