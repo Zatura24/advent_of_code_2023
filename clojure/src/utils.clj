@@ -22,6 +22,16 @@
      io/resource
      slurp)))
 
+(defn read-lines
+  ([] (read-lines "input.txt"))
+  ([file]
+   (with-open [rdr (->
+                     (parent-ns)
+                     (str File/separator file)
+                     io/resource
+                     io/reader)]
+     (into [] (line-seq rdr)))))
+
 (defn split-double-lines
   [^CharSequence s]
   (str/split s #"\r?\n\r?\n"))
