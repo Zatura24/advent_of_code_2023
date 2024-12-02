@@ -1,17 +1,11 @@
 (ns year-2024.day-01
   (:require
-   [clojure.string :as str]
    [utils :as utils]))
 
 (defn ^:private parse-input []
-  (reduce
-    (fn [acc line]
-      (let [[l r] (str/split line #"\s+")]
-        (-> acc
-            (update 0 conj (utils/parse-int l))
-            (update 1 conj (utils/parse-int r)))))
-    [[] []]
-    (utils/read-lines)))
+  (->> (utils/read-lines)
+       (map (comp utils/parse-ints utils/fields))
+       (apply map vector)))
 
 (defn part-1 []
   (let [[l r] (mapv sort (parse-input))]

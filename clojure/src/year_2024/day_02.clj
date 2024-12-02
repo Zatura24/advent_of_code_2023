@@ -2,7 +2,7 @@
   (:require
     [utils :as utils]))
 
-(defn- parse-input []
+(defn ^:private parse-input []
   (mapv (comp utils/parse-ints utils/fields) (utils/read-lines)))
 
 (defn safe? [xs]
