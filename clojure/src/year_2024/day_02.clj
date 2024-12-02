@@ -17,8 +17,7 @@
 
 (defn part-2 []
   (->> (parse-input)
-       (mapv (fn [xs] (map-indexed (fn [i _] (utils/drop-nth i xs)) xs)))
-       (filterv #(some safe? %))
+       (filterv (fn [xs] (some #(safe? (utils/drop-nth % xs)) (range (count xs)))))
        count))
 
 (comment
