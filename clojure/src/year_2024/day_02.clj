@@ -1,28 +1,27 @@
 (ns year-2024.day-02
   (:require
-    [clojure.string :as str]
     [utils :as utils]))
 
-(defn in-order? [xs]
-  (or (= xs (sort xs))
-      (= xs (sort > xs))))
+(defn- parse-input []
+  (mapv (comp utils/parse-ints utils/fields) (utils/read-lines)))
 
-(defn in-range? [xs]
-  (every? #{1 2 3} (mapv (comp abs -) (rest xs) xs)))
+(defn safe? [xs]
+  (let [differences (set (mapv - (rest xs) xs))]
+    (or (every? #{1 2 3} differences)
+        (every? #{-1 -2 -3} differences))))
 
 (defn part-1 []
-  (->> (utils/read-lines)
-       (transduce
-         (comp
-           (map utils/fields)
-           (map utils/parse-ints)
-           (map (fn [xs]
-                  (and
-                    (in-order? xs)
-                    (in-range? xs))))
-           (filter true?))
-         conj)
+  (->> (parse-input)
+       (filterv safe?)
+       count))
+
+(defn part-2 []
+  (->> (parse-input)
+       (mapv (fn [xs] (map-indexed (fn [i _] (utils/drop-nth i xs)) xs)))
+       (filterv #(some safe? %))
        count))
 
 (comment
-  (part-1))
+  (part-1)
+
+  (part-2))

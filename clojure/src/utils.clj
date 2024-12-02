@@ -43,6 +43,11 @@
 (defn split-without [pred coll]
   [(take-while pred coll) (next (drop-while pred coll))])
 
+(defn drop-nth [n coll]
+  (concat
+    (take n coll)
+    (drop (inc n) coll)))
+
 (defn range'
   "Returns a lazy seq with a length from start"
   [start length]
