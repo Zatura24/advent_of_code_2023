@@ -2,7 +2,7 @@
   (:require [utils]))
 
 (defn ^:private multiply [statement]
-  (apply * (mapv utils/parse-int (re-seq #"\d+" statement))))
+  (apply * (utils/parse-ints (re-seq #"\d+" statement))))
 
 (defn part-1 []
   (->> (utils/read-input)
