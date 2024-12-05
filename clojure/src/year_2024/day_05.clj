@@ -7,8 +7,8 @@
   (let [data-sets (->> (utils/read-input)
                        str/split-lines
                        (utils/split-without seq))]
-    {:rules (into #{} (map (comp utils/parse-ints utils/fields)) (first data-sets))
-     :updates (mapv (comp utils/parse-ints #(str/split % #",")) (second data-sets))}))
+    {:rules (into #{} (map utils/fields) (first data-sets))
+     :updates (mapv #(str/split % #",") (second data-sets))}))
 
 (defn ^:private pairs [coll]
   (for [i (range (count coll))
@@ -17,7 +17,7 @@
     [(nth coll j) (nth coll i)]))
 
 (defn ^:private middle-value [coll]
-  (nth coll (quot (count coll) 2)))
+  (utils/parse-int (nth coll (quot (count coll) 2))))
 
 (defn part-1 []
   (let [{:keys [rules updates]} (parse-input)]
