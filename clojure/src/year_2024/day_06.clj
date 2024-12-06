@@ -23,46 +23,41 @@
     (for [r (range (count grid))
           c (range (count (first grid)))
           :when (= (get-in grid [r c]) \^)]
-      [r c])))
+      [[r c] [-1 0]])))
 
 (defn ^:private find-guard-path
-  "Return a vector of position and direction pairs"
-  [grid guard direction]
-  (loop [position guard
-         direction direction
-         seen []]
-    (let [seen (conj seen [position direction])
-          next-position (move position direction)]
-      (case (get-in grid next-position)
-        \# (recur position (turn direction) seen)
-        (\. \^) (recur next-position direction seen)
-        seen))))
+  "Return a vector of position and direction pairs or :loop if a loop is detected"
+  [grid guard]
+  (loop [[position direction :as guard] guard
+         seen #{}
+         path []]
+    (let [seen (conj seen guard)
+          path (conj path guard)
+          guard' [(move position direction) direction]]
+      (if (contains? seen guard')
+        :loop
+        (case (get-in grid (first guard'))
+          \# (recur [position (turn direction)] seen path)
+          (\. \^) (recur guard' seen path)
+          path)))))
 
 (defn part-1 []
   (let [grid (parse-input)]
-    (->> (find-guard-path grid (find-guard grid) [-1 0])
+    (->> (find-guard-path grid (find-guard grid))
          (into #{} (map first))
          count)))
 
 (defn ^:private detect-loop-fn [grid]
-  (fn [[guard direction] obstacle]
+  (fn [guard obstacle]
     (let [grid (assoc-in grid obstacle \#)]
-      (loop [position guard
-             direction direction
-             seen #{}]
-        (let [seen (conj seen [position direction])
-              next-position (move position direction)]
-          (if (contains? seen [next-position direction])
-            1
-            (case (get-in grid next-position)
-              \# (recur position (turn direction) seen)
-              (\. \^) (recur next-position direction seen)
-              0)))))))
+      (if (= :loop (find-guard-path grid guard))
+        1
+        0))))
 
 (defn part-2 []
   (let [grid (parse-input)
         guard (find-guard grid)
-        path (find-guard-path grid guard [-1 0])
+        path (find-guard-path grid guard)
         obstacles (rest path)]
     (->> obstacles
          (into [] (comp (map first) (distinct)))
