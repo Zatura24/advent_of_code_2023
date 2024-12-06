@@ -25,11 +25,13 @@
           :when (= (get-in grid [r c]) \^)]
       [r c])))
 
-(defn ^:private find-guard-path [grid guard]
+(defn ^:private find-guard-path
+  "Return a vector of position and direction pairs"
+  [grid guard direction]
   (loop [position guard
-         direction [-1 0]
-         seen #{}]
-    (let [seen (conj seen position)
+         direction direction
+         seen []]
+    (let [seen (conj seen [position direction])
           next-position (move position direction)]
       (case (get-in grid next-position)
         \# (recur (move position (turn direction)) (turn direction) seen)
@@ -38,16 +40,15 @@
 
 (defn part-1 []
   (let [grid (parse-input)]
-    (->> grid
-         find-guard
-         (find-guard-path grid)
+    (->> (find-guard-path grid (find-guard grid) [-1 0])
+         (into #{} (map first))
          count)))
 
-(defn ^:private detect-loop-fn [grid guard]
-  (fn [obstacle]
+(defn ^:private detect-loop-fn [grid]
+  (fn [[guard direction] obstacle]
     (let [grid (assoc-in grid obstacle \#)]
       (loop [position guard
-             direction [-1 0]
+             direction direction
              seen #{}]
         (let [seen (conj seen [position direction])
               next-position (move position direction)]
@@ -61,12 +62,14 @@
 (defn part-2 []
   (let [grid (parse-input)
         guard (find-guard grid)
-        path (find-guard-path grid guard)]
-    (->> (disj path guard)
-         (pmap (detect-loop-fn grid guard))
+        path (find-guard-path grid guard [-1 0])
+        obstacles (map first (rest path))]
+    (->> obstacles
+         (pmap (detect-loop-fn grid) path)
          (apply +))))
 
 (comment
   (part-1)
 
-  (part-2))
+  (time
+    (part-2)))
