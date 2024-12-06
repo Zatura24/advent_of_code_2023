@@ -34,7 +34,7 @@
     (let [seen (conj seen [position direction])
           next-position (move position direction)]
       (case (get-in grid next-position)
-        \# (recur (move position (turn direction)) (turn direction) seen)
+        \# (recur position (turn direction) seen)
         (\. \^) (recur next-position direction seen)
         seen))))
 
@@ -63,13 +63,13 @@
   (let [grid (parse-input)
         guard (find-guard grid)
         path (find-guard-path grid guard [-1 0])
-        obstacles (map first (rest path))]
+        obstacles (rest path)]
     (->> obstacles
+         (into [] (comp (map first) (distinct)))
          (pmap (detect-loop-fn grid) path)
          (apply +))))
 
 (comment
   (part-1)
 
-  (time
-    (part-2)))
+  (part-2))
