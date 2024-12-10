@@ -6,8 +6,8 @@
 (defn parse-input []
   (->> (utils/read-lines)
        (mapv #(str/split % #": "))
-       (mapv (juxt (comp utils/parse-int first)
-                   (comp utils/parse-ints utils/fields second)))))
+       (mapv (juxt (comp utils/parse-long first)
+                   (comp utils/parse-longs utils/fields second)))))
 
 (defn solvable?-fn [allowed-operations]
   (fn solvable? [[result [a b & xs]]]

@@ -36,9 +36,13 @@
   [^CharSequence s]
   (str/split s #"\r?\n\r?\n"))
 
-(defn parse-int [s] #_(Integer/parseInt (str s)) (parse-long (str s)))
+(defn parse-int [s] (Integer/parseInt (str s)))
 
 (defn parse-ints [coll] (mapv parse-int coll))
+
+(defn parse-long [s] (parse-long (str s)))
+
+(defn parse-longs [coll] (mapv parse-long coll))
 
 (defn split-without [pred coll]
   [(take-while pred coll) (next (drop-while pred coll))])
