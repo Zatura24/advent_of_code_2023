@@ -30,16 +30,14 @@
 (defn reachable-tops [grid start]
   (let [neighbours-fn (neighbours-fn grid)]
     (loop [queue [start]
-           seen #{start}
            tops []]
       (if (empty? queue)
         tops
-        (let [neighbours (into [] (comp
-                                    (mapcat neighbours-fn)
-                                    (remove seen)) queue)]
+        ;; does not deduplicate
+        ;; meaning the same path can be walked twice
+        (let [neighbours (into [] (mapcat neighbours-fn) queue)]
           (recur
             neighbours
-            (into seen neighbours)
             (into tops (filter #(= 9 (grid %))) neighbours)))))))
 
 (defn part-1 []
