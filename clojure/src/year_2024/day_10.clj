@@ -1,47 +1,33 @@
 (ns year-2024.day-10
   (:require
-    [utils :as utils]))
-
-(defn indexed [items]
-  (map-indexed vector items))
-
-(defn parse-input []
-  (into {}
-        (for [[r line] (indexed (utils/read-lines))
-              [c v] (indexed line)]
-          [[r c] (utils/parse-int v)])))
-
-(defn move [position direction]
-  (mapv + position direction))
+    [utils :as utils]
+    [grid :as grid]))
 
 (defn neighbours-fn [grid]
   (fn [pos]
     (into
       []
       (comp
-        (map (partial move pos))
+        (map (partial grid/move pos))
         (filter #(and (get grid pos)
                       (= (grid %) (inc (grid pos))))))
-      [[-1 0] [0 1] [1 0] [0 -1]])))
+      [grid/UP grid/RIGHT grid/DOWN grid/LEFT])))
 
 (defn starting-points [grid]
   (keep #(when (= 0 (val %)) (key %)) grid))
 
 (defn reachable-tops [grid start]
   (let [neighbours-fn (neighbours-fn grid)]
-    (loop [queue [start]
-           tops []]
-      (if (empty? queue)
-        tops
-        ;; does not deduplicate
-        ;; meaning the same path can be walked twice
-        (let [neighbours (into [] (mapcat neighbours-fn) queue)]
-          (recur
-            neighbours
-            (into tops (filter #(= 9 (grid %))) neighbours)))))))
+    (loop [queue [start]]
+      ;; does not deduplicate
+      ;; meaning the same partial path can be walked twice
+      (let [neighbours (into [] (mapcat neighbours-fn) queue)]
+        (if (empty? neighbours)
+          queue
+          (recur neighbours))))))
 
 (defn part-1 []
-  (let [grid (parse-input)]
+  (let [grid (grid/parse (utils/read-lines) utils/parse-digit)]
     (->> grid
          starting-points
          (map #(reachable-tops grid %))
@@ -49,7 +35,7 @@
          count)))
 
 (defn part-2 []
-  (let [grid (parse-input)]
+  (let [grid (grid/parse (utils/read-lines) utils/parse-digit)]
     (->> grid
          starting-points
          (mapcat #(reachable-tops grid %))

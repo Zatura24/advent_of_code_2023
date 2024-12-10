@@ -36,6 +36,10 @@
   [^CharSequence s]
   (str/split s #"\r?\n\r?\n"))
 
+(defn parse-digit [c] (- (int c) (int \0)))
+
+(defn parse-digits [coll] (mapv parse-digit coll))
+
 (defn parse-int [s] (Integer/parseInt (str s)))
 
 (defn parse-ints [coll] (mapv parse-int coll))
