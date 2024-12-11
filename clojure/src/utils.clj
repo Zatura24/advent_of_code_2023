@@ -20,7 +20,8 @@
      (parent-ns)
      (str File/separator file)
      io/resource
-     slurp)))
+     slurp
+     str/trim)))
 
 (defn read-lines
   ([] (read-lines "input.txt"))
@@ -43,8 +44,6 @@
 (defn parse-int [s] (Integer/parseInt (str s)))
 
 (defn parse-ints [coll] (mapv parse-int coll))
-
-(defn parse-long [s] (parse-long (str s)))
 
 (defn parse-longs [coll] (mapv parse-long coll))
 
