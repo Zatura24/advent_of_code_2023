@@ -25,14 +25,18 @@
       vals
       (->> (mapv count) (apply *))))
 
+(defn view-iteration [iteration robots]
+  (mapv
+    (fn [[x y dx dy]]
+      [(mod (+ x (* iteration dx)) WIDTH)
+       (mod (+ y (* iteration dy)) HEIGHT)
+       dx dy])
+    robots))
+
 (defn part-1 []
   (let [robots (parse (utils/read-lines))]
     (->> robots
-         (mapv
-           (fn [[x y dx dy]]
-             [(mod (+ x (* 100 dx)) WIDTH)
-              (mod (+ y (* 100 dy)) HEIGHT)
-              dx dy]))
+         (view-iteration 100)
          safety-factor)))
 
 (defn part-2 []
@@ -43,11 +47,7 @@
       (if (nil? iteration)
         (second min-safety-factor)
         (let [safety-factor (->> robots
-                                 (mapv
-                                   (fn [[x y dx dy]]
-                                     [(mod (+ x (* iteration dx)) WIDTH)
-                                      (mod (+ y (* iteration dy)) HEIGHT)
-                                      dx dy]))
+                                 (view-iteration iteration)
                                  safety-factor)]
           (if (< safety-factor (first min-safety-factor))
             (recur rest [safety-factor iteration])
