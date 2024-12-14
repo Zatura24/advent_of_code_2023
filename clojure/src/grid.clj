@@ -1,9 +1,14 @@
 (ns grid)
 
 (def UP [-1 0])
+(def RIGHT [0 1])
 (def DOWN [1 0])
 (def LEFT [0 -1])
-(def RIGHT [0 1])
+
+(def TOP-RIGHT [[-1 0] [-1 1] [0 1]])
+(def BOTTOM-RIGHT [[0 1] [1 1] [1 0]])
+(def BOTTOM-LEFT [[1 0] [1 -1] [0 -1]])
+(def TOP-LEFT [[0 -1] [-1 -1] [-1 0]])
 
 (defn indexed [items]
   (map-indexed vector items))
@@ -18,3 +23,10 @@
 
 (defn move [position direction]
   (mapv + position direction))
+
+(defn neighbours [grid pos]
+  (into []
+        (comp
+          (map (partial move pos))
+          #_(filter grid))
+        [UP RIGHT DOWN LEFT]))
