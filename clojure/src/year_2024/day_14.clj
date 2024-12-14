@@ -19,43 +19,41 @@
       (and (> x mx) (> y my)) 3
       (and (< x mx) (> y my)) 4)))
 
-(comment
-  (let [robots (parse (utils/read-lines))
-        iterations 0]
-    (->
-      (->> robots
-           (mapv
-             (fn [[x y dx dy]]
-               [(mod (+ x (* iterations dx)) WIDTH)
-                (mod (+ y (* iterations dy)) HEIGHT)
-                dx dy]))
-           (group-by quadrant))
+(defn safety-factor [robots]
+  (-> (group-by quadrant robots)
       (dissoc nil)
       vals
-      (->> (mapv count)
-           (apply *))))
+      (->> (mapv count) (apply *))))
 
-
-  244 140 625
-  244 125 000
-
-
+(defn part-1 []
   (let [robots (parse (utils/read-lines))]
-    (loop [[iterations & rest] (range 10000)
-           robots robots
-           min-entropy [Integer/MAX_VALUE 0]]
-      (if (nil? iterations)
-        min-entropy
-        (let [new (mapv
-                    (fn [[x y dx dy]]
-                      [(mod (+ x (* iterations dx)) WIDTH)
-                       (mod (+ y (* iterations dy)) HEIGHT)
-                       dx dy])
-                    robots)
-              entropy (-> (group-by quadrant new)
-                          (dissoc nil)
-                          vals
-                          (->> (mapv count) (apply *)))]
-          (if (< entropy (first min-entropy))
-            (recur rest robots [entropy iterations])
-            (recur rest robots min-entropy)))))))
+    (->> robots
+         (mapv
+           (fn [[x y dx dy]]
+             [(mod (+ x (* 100 dx)) WIDTH)
+              (mod (+ y (* 100 dy)) HEIGHT)
+              dx dy]))
+         safety-factor)))
+
+(defn part-2 []
+  (let [robots (parse (utils/read-lines))]
+    ;; Cycle occures after width * height iterations
+    (loop [[iteration & rest] (range (* WIDTH HEIGHT))
+           min-safety-factor [Integer/MAX_VALUE nil]]
+      (if (nil? iteration)
+        (second min-safety-factor)
+        (let [safety-factor (->> robots
+                                 (mapv
+                                   (fn [[x y dx dy]]
+                                     [(mod (+ x (* iteration dx)) WIDTH)
+                                      (mod (+ y (* iteration dy)) HEIGHT)
+                                      dx dy]))
+                                 safety-factor)]
+          (if (< safety-factor (first min-safety-factor))
+            (recur rest [safety-factor iteration])
+            (recur rest min-safety-factor)))))))
+
+(comment
+  (part-1)
+
+  (part-2))

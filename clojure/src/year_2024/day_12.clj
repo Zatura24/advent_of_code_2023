@@ -8,7 +8,7 @@
          visited #{pos}]
     (let [neighbours (into []
                            (comp
-                             (mapcat (partial grid/neighbours grid))
+                             (mapcat grid/neighbours)
                              (distinct)
                              (remove visited)
                              (filter #(= (grid pos) (grid %))))
@@ -23,7 +23,7 @@
 (defn region-perimeter [region]
   (reduce
     (fn [acc cell]
-      (+ acc (- 4 (count (filter region (grid/neighbours region cell))))))
+      (+ acc (- 4 (count (filter region (grid/neighbours cell))))))
     0
     (keys region)))
 

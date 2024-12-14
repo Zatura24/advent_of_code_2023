@@ -24,9 +24,7 @@
 (defn move [position direction]
   (mapv + position direction))
 
-(defn neighbours [grid pos]
+(defn neighbours [pos]
   (into []
-        (comp
-          (map (partial move pos))
-          #_(filter grid))
+        (map (partial move pos))
         [UP RIGHT DOWN LEFT]))
