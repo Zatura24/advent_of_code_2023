@@ -21,6 +21,9 @@
                [c v] (indexed line)]
            [[r c] (modify-fn v)]))))
 
+(defn find-all [target grid]
+  (keep #(when (= (val %) target) (key %)) grid))
+
 (defn move [position direction]
   (mapv + position direction))
 
