@@ -27,6 +27,12 @@
 (defn move [position direction]
   (mapv + position direction))
 
+(defn clockwise [[r c]]
+  [c (- r)])
+
+(defn counter-clockwise [[r c]]
+  [(- c) r])
+
 (defn neighbours [pos]
   (into []
         (map (partial move pos))
