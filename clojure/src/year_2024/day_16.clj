@@ -39,44 +39,42 @@
                                 (into queue))]
             (recur neighbours visited)))))))
 
-(defn neighbours2 [score position direction]
+#_(defn neighbours2 [score position direction]
   [[(inc score) (grid/move position direction) direction]
-   [(+ score 1001) (grid/move position (grid/clockwise direction)) (grid/clockwise direction)]
-   [(+ score 1001) (grid/move position (grid/counter-clockwise direction)) (grid/counter-clockwise direction)]])
+   [(+ score 1000) position (grid/clockwise direction)]
+   [(+ score 1000) position (grid/counter-clockwise direction)]])
 
-(defn trace [paths node]
+
+#_(defn trace [paths node]
   (if (empty? (paths node))
     #{}
     (reduce into #{node} (map #(trace paths %) (paths node)))))
 
-(defn part-2 []
+#_(defn part-2 []
   (let [{:keys [grid start facing end]} (parse)]
-    (loop [queue (conj (sorted-set) [0 start facing nil])
+    (println end)
+    (loop [queue (conj (sorted-set) [0 start facing])
            visited {}
            previous {}]
-      (let [[score current-pos facing previous-pos :as head] (first queue)
-            queue (disj queue head)]
-        (cond
-          (> score (visited current-pos Integer/MAX_VALUE)) (recur queue visited previous)
-          (= current-pos end) (count (set (map first (trace (update previous [current-pos facing] (fnil conj []) previous-pos) [current-pos facing]))))
-
-
-          #_(loop [[tail & queue] [previous-pos]
-                 visisted #{}]
-            (Thread/sleep 250)
-            (println tail queue)
-              (if (nil? tail)
-                  visisted
-                  (recur (into queue (previous tail)) (into visisted (map first) (previous tail)))))
-          :else (let [visited (assoc visited [current-pos facing score] score)
-                      neighbours (->> (for [[score neighbour direction] (neighbours2 score current-pos facing)
-                                            :when (and (< score (visited [neighbour direction] Integer/MAX_VALUE))
-                                                       (not= (grid neighbour) \#)
-                                                       (not= direction (mapv - facing)))]
-                                        [score neighbour direction [current-pos facing]])
-                                      (into queue))
-                      previous (update previous [current-pos facing] (fnil conj []) previous-pos)]
-                  (recur neighbours visited previous)))))))
+      (if (empty? queue)
+        (def _previous previous)
+        (let [[score current-pos facing :as head] (first queue)
+              queue (disj queue head)
+              visited (assoc visited [current-pos facing] score)
+              neighbours (for [[score neighbour direction] (neighbours2 score current-pos facing)
+                               :when (and (<= score (visited [neighbour direction] Integer/MAX_VALUE))
+                                          (not= (grid neighbour) \#)
+                                          (not= direction (mapv - facing)))]
+                           [score neighbour direction])]
+          (recur (into queue (filter
+                               (fn [[s p d]]
+                                 (< s (visited [p d] Integer/MAX_VALUE)))) neighbours)
+                 visited
+                 (reduce
+                   (fn [acc [_ pos dir]]
+                     (update acc [pos dir] (fnil conj []) [current-pos facing]))
+                   previous
+                   neighbours)))))))
 
 (comment
   (part-1))
