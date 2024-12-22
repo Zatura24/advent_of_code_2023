@@ -37,3 +37,9 @@
   (into []
         (map (partial move pos))
         [UP RIGHT DOWN LEFT]))
+
+(defn print-grid [grid width height]
+  (dotimes [r width]
+    (dotimes [c height]
+      (print (grid [r c])))
+    (println)))
